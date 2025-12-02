@@ -1,44 +1,46 @@
-class Shared {
-    // static member shared across all instances
-    static int count = 0;
+// 1. PARENT CLASS
+class Beverage {
+    String temperature;
 
-    // instance field (separate per object)
-    int id;
+    public Beverage(String temperature) {
+        this.temperature = temperature;
+        System.out.println("1. [Parent] Beverage initialized as: " + temperature);
+    }
+}
 
-    Shared() {
-        // increment shared static counter
-        count++;
-        id = count; // give each instance a unique id at construction time
+// 2. CHILD CLASS
+class Coffee extends Beverage {
+    String type;
+    String size;
+
+    // --- CONSTRUCTOR 1: The "Lazy" option ---
+    // User just says "Give me a coffee"
+    public Coffee() {
+        // We assume they want a Medium Regular. 
+        // We chain to Constructor 2.
+        this("Regular", "Medium"); 
+        System.out.println("4. [Child] Default Coffee created.");
     }
 
-    void show() {
-        System.out.println("Object id = " + id + ", Shared.count = " + count);
-    }
-
-    static void showStatic() {
-        System.out.println("Shared.count (from class) = " + count);
+    // --- CONSTRUCTOR 2: The "Specific" option ---
+    // User specifies what they want
+    public Coffee(String type, String size) {
+        // We chain to the Parent constructor (super) to set the temp.
+        // We assume all coffee is "Hot".
+        super("Hot"); 
+        
+        this.type = type;
+        this.size = size;
+        System.out.println("2. [Child] Coffee details set: " + size + " " + type);
+        System.out.println("3. [Child] Serving the coffee...");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Shared a = new Shared();
-        Shared b = new Shared();
-        Shared c = new Shared();
-
-        a.show();
-        b.show();
-        c.show();
-
-        // modify static via one instance
-        b.count = 42;
-
-        System.out.println("--- after b.count = 42 ---");
-        a.show();
-        b.show();
-        c.show();
-
-        // access static via class
-        Shared.showStatic();
+        System.out.println("--- Customer 1: Orders Default Coffee ---");
+        // This triggers the full chain: 
+        // Coffee() -> Coffee(String, String) -> Beverage(String)
+        Coffee myOrder = new Coffee(); 
     }
 }
